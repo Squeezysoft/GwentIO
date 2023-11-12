@@ -19,5 +19,5 @@ const sharedComponents: Array<Type<unknown>> = [
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'gwentio';
+  title = 'Gwent.IO';
 }
