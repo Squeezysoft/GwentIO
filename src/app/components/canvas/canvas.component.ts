@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { MathHelper } from '../../helpers';
 
 @Component({
   selector: 'app-canvas',
@@ -9,10 +10,13 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
   styleUrl: './canvas.component.scss'
 })
 export class CanvasComponent implements AfterViewInit {
-  context: CanvasRenderingContext2D;
   isBrowser: boolean;
+  context: CanvasRenderingContext2D;
+  width: number;
+  height: number;
 
   @ViewChild('canvas', { static: false }) canvas: ElementRef<HTMLCanvasElement>;
+  @ViewChild('color', { static: false }) color: ElementRef<HTMLDivElement>;
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     console.log('platformId:', platformId);
@@ -39,5 +43,20 @@ export class CanvasComponent implements AfterViewInit {
     context.fillRect(0, 0, width, height);
 
     this.context = context;
+    this.width = width;
+    this.height = height;
+  }
+
+  @HostListener('mousemove', ['$event'])
+  onMouseMove(event: MouseEvent): void {
+    const x = MathHelper.clamp(event.offsetX, 0, this.width);
+    const y = MathHelper.clamp(event.offsetY, 0, this.height);
+    //console.log('onMouseMove:', event);
+    console.log(`onMouseMove: (${x}, ${y})`);
+    const image = this.context.getImageData(x, y, 1, 1);
+    const [red, green, blue, alpha] = image.data;
+    const color = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+    console.log(color);
+    this.color.nativeElement.style.backgroundColor = color;
   }
 }
