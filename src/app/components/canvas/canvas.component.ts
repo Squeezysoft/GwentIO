@@ -42,6 +42,12 @@ export class CanvasComponent implements AfterViewInit {
     context.fillStyle = gradient;
     context.fillRect(0, 0, width, height);
 
+    const image = new Image();
+    image.onload = () => {
+      context.drawImage(image, 0, 0, image.width / 2, image.height / 2);
+    };
+    image.src = '../../assets/images/cards/djextra.png';
+
     this.context = context;
     this.width = width;
     this.height = height;
